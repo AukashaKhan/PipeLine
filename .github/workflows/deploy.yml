@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Hello World to GitHub Pages
 
 on:
   push:
@@ -11,26 +11,25 @@ permissions:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      # 👇 Workaround: force fetch upload-artifact@v3
-      - name: Pre-fetch upload-artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: dummy
-          path: ./index.html
+      - name: Upload HTML artifact
+        uses: actions/upload-pages-artifact@v1  # 👈 Use @v1 (not @v2)
 
-      - name: Upload site files
-        uses: actions/upload-pages-artifact@v2
         with:
-          path: '.'
+          path: .
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v2
