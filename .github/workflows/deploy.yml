@@ -12,6 +12,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,11 +20,17 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Upload site files
-        uses: actions/upload-pages-artifact@v2  # ✅ Not 'upload-artifact'
-
+      # 👇 Workaround: force fetch upload-artifact@v3
+      - name: Pre-fetch upload-artifact
+        uses: actions/upload-artifact@v3
         with:
-          path: '.'  # Your HTML root folder
+          name: dummy
+          path: ./index.html
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: '.'
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
